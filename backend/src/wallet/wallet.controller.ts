@@ -23,4 +23,9 @@ export class WalletController {
     ) {
         return this.walletService.sendTransaction(senderAddress, recipientAddress, amount);
     }
+    
+    @Get(':address/transactions')
+    getTransactionHistory(@Param('address') address: string) {
+        return this.walletService.getTransactionHistory(address);
+    }
 }

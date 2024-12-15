@@ -86,4 +86,11 @@ export class WalletService implements OnModuleInit {
             throw new Error(`Transaction failed: ${error.message}`);
         }
     }
+    
+    async getTransactionHistory(address: string): Promise<Transaction[]> {
+        return this.transactionRepository.find({
+            where: [{ senderAddress: address }, { recipientAddress: address }],
+            order: { createdAt: "DESC" },
+        });
+    }
 }
