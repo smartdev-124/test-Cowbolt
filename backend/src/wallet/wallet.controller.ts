@@ -10,4 +10,8 @@ export class WalletController {
         return this.walletService.createWallet(username);
     }
 
+    @Get(':address/balance')
+    getBalance(@Param('address') address: string) {
+        return this.walletService.getBalance(address);
+    }
 }
