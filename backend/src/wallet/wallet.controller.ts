@@ -14,4 +14,13 @@ export class WalletController {
     getBalance(@Param('address') address: string) {
         return this.walletService.getBalance(address);
     }
+
+    @Post('send')
+    sendTransaction(
+        @Body('senderAddress') senderAddress: string,
+        @Body('recipientAddress') recipientAddress: string,
+        @Body('amount') amount: number,
+    ) {
+        return this.walletService.sendTransaction(senderAddress, recipientAddress, amount);
+    }
 }

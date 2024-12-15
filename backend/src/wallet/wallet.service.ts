@@ -49,4 +49,41 @@ export class WalletService implements OnModuleInit {
 
         return wallet.balance;
     }
+
+    async sendTransaction(senderAddress: string, recipientAddress: string, amount: number): Promise<string> {
+        if (amount <= 0) throw new BadRequestException('Invalid amount');
+
+        const sender = await this.walletRepository.findOne({ where: { address: senderAddress } });
+        const recipient = await this.walletRepository.findOne({ where: { address: recipientAddress } });
+
+        if (!sender || !recipient) throw new NotFoundException('Wallet not found');
+        if (sender.balance < amount) throw new BadRequestException('Insufficient balance');
+
+        try {
+            const wallet = new ethers.Wallet(sender.privateKey, this.provider);
+            const tx = await wallet.sendTransaction({
+                to: recipientAddress,
+                value: ethers.utils.parseEther(String(amount)),
+            });
+
+            sender.balance = Number(sender.balance) - Number(amount);
+            recipient.balance = Number(recipient.balance) + Number(amount);
+
+            await this.walletRepository.save(sender);
+            await this.walletRepository.save(recipient);
+
+            const transaction = this.transactionRepository.create({
+                hash: tx.hash,
+                senderAddress,
+                recipientAddress,
+                amount,
+            });
+
+            await this.transactionRepository.save(transaction);
+
+            return tx.hash;
+        } catch (error) {
+            throw new Error(`Transaction failed: ${error.message}`);
+        }
+    }
 }
