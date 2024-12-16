@@ -68,7 +68,7 @@ Before running the project, ensure you have:
    Backend: The REST API will be available at http://localhost:3000.
 ## API Endpoints.
     --------------------------------------------------------------------------------------
-    | Method  |	Endpoint	                        | Description                    |
+    | Method  |	Endpoint	                    | Description                    |
     --------------------------------------------------------------------------------------
     | POST    |	/api/wallet/create                  | Create a new wallet            |
     --------------------------------------------------------------------------------------
